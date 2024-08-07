@@ -1,4 +1,6 @@
 CC = clang
 
-bin/mdtool: src/main.c
-	$(CC) -o bin/mdtool src/main.c
+main: bin/mdtool
+
+bin/mdtool: src/prompt.c
+	$(CC) -o bin/mdtool src/prompt.c
