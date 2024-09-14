@@ -17,6 +17,6 @@ returns:
     0 for success
     1 if unable to parse
 */
-status_t do_command(char* in);
+status_t do_command(const char* in);
 
 #endif

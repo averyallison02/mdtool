@@ -1,15 +1,17 @@
 #include <stdio.h>
 #include <stdbool.h>
+#include <string.h>
 
 #include "prompt.h"
 
-status_t do_command(char* in) {
+status_t do_command(const char* in) {
+    if (strcmp("q", in) || strcmp("quit", in)) {
+        return QUIT;
+    }
     return QUIT;
 }
 
 int main(int argc, char** argv) {
-    // get path
-
     // get initial vault and node
     char vault[MAX_NAME];
     vault[0] = '\0';
