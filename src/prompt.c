@@ -5,10 +5,42 @@
 #include "prompt.h"
 
 status_t do_command(const char* in) {
-    if (strcmp("q", in) || strcmp("quit", in)) {
+    if (strcmp("q", in) == 0 || strcmp("quit", in) == 0) {
         return QUIT;
     }
-    return QUIT;
+    else if (strcmp("i", in) == 0 || strcmp("init", in) == 0) {
+        // TODO init
+        return SUCCESS;
+    }
+    else if (strcmp("cn", in) == 0) {
+        // TODO cn
+        return SUCCESS;
+    }
+    else if (strcmp("create", in) == 0 || strcmp("c", in) == 0) {
+        // TODO create
+        return SUCCESS;
+    }
+    else if (strcmp("archive", in) == 0 || strcmp("a", in) == 0) {
+        // TODO archive
+        return SUCCESS;
+    }
+    else if (strcmp("delete", in) == 0 || strcmp("d", in) == 0) {
+        // TODO delete
+        return SUCCESS;
+    }
+    else if (strcmp("rename", in) == 0 || strcmp("rn", in) == 0) {
+        // TODO rename
+        return SUCCESS;
+    }
+    else if (strcmp("cd", in) == 0) {
+        // TODO cd
+        return SUCCESS;
+    }
+    else if (strcmp("pwd", in) == 0) {
+        // TODO pwd
+        return SUCCESS;
+    }
+    return ERROR;
 }
 
 int main(int argc, char** argv) {
