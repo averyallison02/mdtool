@@ -1,6 +1,12 @@
 CC = clang
 
-main: bin/mdtool
+default: bin/mdtool
 
-bin/mdtool: src/prompt.c
-	$(CC) -g -o bin/mdtool src/prompt.c
+bin/mdtool: bin/prompt.o bin/vault.o
+	$(CC) -g -o bin/mdtool bin/prompt.o bin/vault.o
+
+bin/prompt.o: src/prompt.c
+	$(CC) -c -g -o bin/prompt.o src/prompt.c
+
+bin/vault.o: src/vault.c
+	$(CC) -c -g -o bin/vault.o src/vault.c
