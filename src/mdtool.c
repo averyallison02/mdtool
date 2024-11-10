@@ -2,6 +2,7 @@
  * Avery Allison 2024
  */
 
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -51,6 +52,31 @@ int parseargs(int argc, char** argv)
 }
 
 /*
+parse only name from filename string
+return:
+    result on success (must be freed)
+    NULL on failure
+*/
+char* getname(char* line)
+{
+    // go to _
+    char* name = strchr(line, '_') + 1;
+    name = strcpy(malloc(strlen(name) + 1), name);
+
+    // change . to null
+    char* dot = strchr(name, '.');
+    if (dot == NULL)
+    {
+        free(name);
+        fprintf(stderr, "No filename extension\n");
+        return NULL;
+    }
+    *dot = '\0';
+
+    return realloc(name, strlen(name) + 1);
+}
+
+/*
 write base data to child
 return:
     -1 for error
@@ -73,15 +99,15 @@ int writechild(char* child, char* parent)
         return -1;
     }
 
-    // get parent name
-    char* pname = strchr(parent, '_') + 1;
-
     // child links to parent if not index
+    char* pname = getname(parent);
+    if (pname == NULL) return -1;
     if (strcmp(pname, "Index") == 0);
     else if (fprintf(fp, "[%s](%s)\n", pname, parent) < 0)
     {
         fprintf(stderr, "%s: Error writing to file\n", child);
         fclose(fp);
+        free(pname);
         return -1;
     }
 
@@ -90,10 +116,12 @@ int writechild(char* child, char* parent)
     {
         fprintf(stderr, "%s: Error writing to file\n", child);
         fclose(fp);
+        free(pname);
         return -1;
     }
 
     fclose(fp);
+    free(pname);
     return 0;
 }
 
@@ -130,9 +158,43 @@ int updateparent(char* child, char* parent)
             fclose(fp);
             return -1;
         }
-    } 
+    }
     while (strcmp(line, "### Children\n") != 0);
     if (line != NULL) free(line);
+
+    // read until # after line
+    line = NULL;
+    linesz = 0;
+    char c;
+    do
+    {
+        if (line != NULL)
+        {
+            free(line);
+            line = NULL;
+        }
+        if (getline(&line, &linesz, fp) == -1)
+        {
+            free(line);
+            fprintf(stderr, "Unable to get line from parent file\n");
+            fclose(fp);
+            return -1;
+        }
+        if ((c = fgetc(fp)) == EOF)
+            {
+                free(line);
+                fprintf(stderr, "Unable to get char from parent file\n");
+                fclose(fp);
+                return -1;
+            }
+    }
+    while (c != '#');
+    if (line != NULL) free(line);
+    line = NULL;
+
+    fseek(fp, -1, SEEK_CUR);
+
+    // TODO: Insert child link
 
     fclose(fp);
     return 0;
